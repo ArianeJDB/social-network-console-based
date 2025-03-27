@@ -9,14 +9,15 @@ class SocialNetwork:
 
     def input_manager(self, get_now=datetime.datetime.now):
         command = input("> ")
+        is_one_word = len(command.split()) == 1
         
-        if "->" not in command  and len(command.split()) == 1:
+        if "->" not in command  and is_one_word:
             self.read_messages_by(command)
         
-        if not re.match(r'\w+\s->', command):
+        if not self.isUsernamePresentBeforeArrow(command):
             return True
         
-        if not re.match(r'\w+\s->\s\w+', command):
+        if not self.isMessagePresentAfterArrow(command):
             return True
         
         self.store_message(command, get_now)
@@ -40,8 +41,15 @@ class SocialNetwork:
             minutes_ago = int(time_diff.total_seconds() // 60)
             time_display = f"{minutes_ago} min ago"
             print(f"{message['message']} ({time_display})")
-
     
+    @staticmethod
+    def isUsernamePresentBeforeArrow(command):
+        return bool(re.match(r'\w+\s->', command))
+    
+    @staticmethod
+    def isMessagePresentAfterArrow(command):
+        return bool(re.match(r'\w+\s->\s\w+', command))
+
 if __name__ == "__main__":
     manager = SocialNetwork()
     while True:

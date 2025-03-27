@@ -62,6 +62,8 @@ class SocialNetwork:
         return self.following[user]
     
     def show_wall(self, username, get_now=datetime.datetime.now):
+        self.read_messages_by(username, get_now, True)
+
         followed_users = self.get_following(username)
 
         for followed_user in followed_users:

@@ -8,6 +8,10 @@ from social_network import SocialNetwork
 
 social_network = SocialNetwork()
 
+@pytest.fixture(autouse=True)
+def clear_messages():
+    social_network.messages.clear()
+
 def test_stores_message_posted_with_timestamp():
     fixed_time = datetime.now()
     mock_now = Mock(return_value=fixed_time)

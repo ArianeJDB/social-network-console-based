@@ -17,6 +17,7 @@ class SocialNetwork:
         self.messages[username].append({
             "message": message
         })
+        return self.messages[username]
 
 if __name__ == "__main__":
     manager = SocialNetwork()

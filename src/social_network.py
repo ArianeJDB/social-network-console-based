@@ -9,6 +9,9 @@ class SocialNetwork:
     def input_manager(self, get_now=datetime.datetime.now):
         command = input("> ")
 
+        if "->" not in command:
+            return True
+        
         self.store_message(command, get_now)
         return True
     

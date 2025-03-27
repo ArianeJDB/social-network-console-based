@@ -6,11 +6,16 @@ import re
 class SocialNetwork:
     def __init__(self):
         self.messages = defaultdict(list)
+        self.following = defaultdict(list)
 
     def input_manager(self, get_now=datetime.datetime.now):
         command = input("> ")
         is_one_word = len(command.split()) == 1
-        
+
+        if "follows" in command:
+            user, user_to_follow = command.split(" follows ")
+            self.store_following(user, user_to_follow)
+
         if "->" not in command  and is_one_word:
             self.read_messages_by(command)
         
@@ -41,6 +46,12 @@ class SocialNetwork:
             minutes_ago = int(time_diff.total_seconds() // 60)
             time_display = f"{minutes_ago} min ago"
             print(f"{message['message']} ({time_display})")
+    
+    def store_following(self, user, user_to_follow):
+        self.following[user].append({
+            "following": user_to_follow
+        })
+        return self.following[user]
     
     @staticmethod
     def isUsernamePresentBeforeArrow(command):

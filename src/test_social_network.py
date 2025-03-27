@@ -92,3 +92,18 @@ def test_when_username_does_not_exist_messages_dont_print():
     mock_store_message.assert_not_called()
     mock_read_messages.assert_called_once_with("nonexistentUsername")
     mock_print.assert_not_called()
+
+def test_stores_following_when_command_contains_follows():
+    fixed_time = datetime.now()
+    mock_now = Mock(return_value=fixed_time)
+    social_network.following = defaultdict(list)
+
+    with patch('builtins.input', return_value="username follows anotherUsername"), \
+        patch.object(social_network, 'store_following') as mock_following:
+            social_network.input_manager(get_now=mock_now)
+
+    mock_following.assert_called_once()
+    mock_following.assert_called_with("username", "anotherUsername")
+    expected_following = social_network.store_following("username", "anotherUsername")
+    assert expected_following == [{"following": "anotherUsername"}]
+    assert "username" in social_network.following

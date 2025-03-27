@@ -125,10 +125,8 @@ def test_wall_displays_followed_users_messages():
          patch('builtins.print') as mock_print:
         social_network.input_manager(get_now=mock_now)
         
-        mock_print.assert_any_call("user_followed - Message (0 min ago)")
-
-        
-        assert mock_print.call_count == 1
+    mock_print.assert_any_call("user_followed - Message (0 min ago)")
+    assert mock_print.call_count == 1
 
 def test_wall_displays_only_own_messages_when_does_not_follows_anybody():
     fixed_time = datetime.now()
@@ -143,6 +141,21 @@ def test_wall_displays_only_own_messages_when_does_not_follows_anybody():
          patch('builtins.print') as mock_print:
         social_network.input_manager(get_now=mock_now)
         
-        mock_print.assert_any_call("user - My own message (0 min ago)")
+    mock_print.assert_any_call("user - My own message (0 min ago)")
+    assert mock_print.call_count == 1
 
-        assert mock_print.call_count == 1
+def test_wall_displays_followed_users_messages_and_own_messages():
+    fixed_time = datetime.now()
+    mock_now = Mock(return_value=fixed_time)
+    
+    social_network.store_following("user", "user_followed")
+    social_network.store_message("user_followed -> Message from user that is followed", mock_now)
+    social_network.store_message("user -> My own message", mock_now)
+    
+    with patch('builtins.input', return_value="user wall"), \
+         patch('builtins.print') as mock_print:
+        social_network.input_manager(get_now=mock_now)
+        
+    mock_print.assert_any_call("user - My own message (0 min ago)")
+    mock_print.assert_any_call("user_followed - Message from user that is followed (0 min ago)")
+    assert mock_print.call_count == 2

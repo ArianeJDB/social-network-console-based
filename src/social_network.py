@@ -10,8 +10,8 @@ class SocialNetwork:
     def input_manager(self, get_now=datetime.datetime.now):
         command = input("> ")
         
-        if "->" not in command:
-            return True
+        if "->" not in command  and len(command.split()) == 1:
+            self.read_messages_by(command)
         
         if not re.match(r'\w+\s->', command):
             return True
@@ -30,6 +30,11 @@ class SocialNetwork:
         })
         return self.messages[username]
 
+    def read_messages_by(self, username):
+        for message in self.messages[username]:
+            print(message['message'])
+
+    
 if __name__ == "__main__":
     manager = SocialNetwork()
     while True:

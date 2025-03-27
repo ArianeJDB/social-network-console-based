@@ -46,9 +46,22 @@ def test_message_is_not_stored_when_does_not_have_username_before_the_arrow():
 def test_message_is_not_stored_when_does_not_have_message_after_the_arrow():
     fixed_time = datetime.now()
     mock_now = Mock(return_value=fixed_time)
-    
+
     with patch.object(social_network, 'store_message') as mock_store_message, \
         patch('builtins.input', return_value="username ->"):
             social_network.input_manager(get_now=mock_now)
         
     mock_store_message.assert_not_called()
+
+def test_reads_messages_by_username_when_command_does_not_have_arrow_and_is_only_one_word():
+    fixed_time = datetime.now()
+    mock_now = Mock(return_value=fixed_time)
+    
+    with patch.object(social_network, 'store_message') as mock_store_message, \
+         patch.object(social_network, 'read_messages_by') as mock_read_messages, \
+         patch('builtins.input', return_value="username"), \
+        patch('builtins.print') as mock_print:
+            social_network.input_manager(get_now=mock_now)
+    
+    mock_store_message.assert_not_called()
+    mock_read_messages.assert_called_once_with("username")

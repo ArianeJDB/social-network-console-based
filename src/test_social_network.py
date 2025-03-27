@@ -66,7 +66,7 @@ def test_reads_messages_by_username_when_command_does_not_have_arrow_and_is_only
     mock_store_message.assert_not_called()
     mock_read_messages.assert_called_once_with("username")
 
-def test_reads_messages_by_username_and_prints_message_with_time_ago(): #3
+def test_reads_messages_by_username_and_prints_message_with_time_ago():
     fixed_time = datetime.now() - timedelta(minutes = 5)
 
     with patch("datetime.datetime") as mock_datetime, \
@@ -77,3 +77,18 @@ def test_reads_messages_by_username_and_prints_message_with_time_ago(): #3
         social_network.read_messages_by("username", get_now=mock_datetime.now) 
 
     mock_print.assert_called_with("message (5 min ago)")
+
+def test_when_username_does_not_exist_messages_dont_print(): 
+    fixed_time = datetime.now()
+    mock_now = Mock(return_value=fixed_time)
+    
+    with patch.object(social_network, 'store_message') as mock_store_message, \
+         patch.object(social_network, 'read_messages_by') as mock_read_messages, \
+         patch('builtins.print') as mock_print, \
+         patch('builtins.input', return_value="nonexistentUsername"):
+        
+        social_network.input_manager(get_now=mock_now)
+    
+    mock_store_message.assert_not_called()
+    mock_read_messages.assert_called_once_with("nonexistentUsername")
+    mock_print.assert_not_called()

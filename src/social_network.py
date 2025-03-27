@@ -41,7 +41,7 @@ class SocialNetwork:
             get_now = datetime.datetime.now 
         now = get_now()
         
-        for message in self.messages.get(username):
+        for message in self.messages.get(username, []):
             time_diff = now - message['timestamp']
             minutes_ago = int(time_diff.total_seconds() // 60)
             time_display = f"{minutes_ago} min ago"

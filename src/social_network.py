@@ -30,9 +30,16 @@ class SocialNetwork:
         })
         return self.messages[username]
 
-    def read_messages_by(self, username):
-        for message in self.messages[username]:
-            print(message['message'])
+    def read_messages_by(self, username, get_now=None):
+        if get_now is None:
+            get_now = datetime.datetime.now 
+        now = get_now()
+        
+        for message in self.messages.get(username):
+            time_diff = now - message['timestamp']
+            minutes_ago = int(time_diff.total_seconds() // 60)
+            time_display = f"{minutes_ago} min ago"
+            print(f"{message['message']} ({time_display})")
 
     
 if __name__ == "__main__":

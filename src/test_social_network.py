@@ -1,5 +1,5 @@
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytest
 from unittest.mock import Mock, patch
 
@@ -65,3 +65,15 @@ def test_reads_messages_by_username_when_command_does_not_have_arrow_and_is_only
     
     mock_store_message.assert_not_called()
     mock_read_messages.assert_called_once_with("username")
+
+def test_reads_messages_by_username_and_prints_message_with_time_ago(): #3
+    fixed_time = datetime.now() - timedelta(minutes = 5)
+
+    with patch("datetime.datetime") as mock_datetime, \
+        patch('builtins.print') as mock_print:
+        mock_datetime.now.return_value = datetime.now() 
+        
+        social_network.store_message("username -> message", get_now=lambda: fixed_time)  
+        social_network.read_messages_by("username", get_now=mock_datetime.now) 
+
+    mock_print.assert_called_with("message (5 min ago)")

@@ -1,6 +1,7 @@
 
 from collections import defaultdict
 import datetime
+import re
 
 class SocialNetwork:
     def __init__(self):
@@ -8,8 +9,11 @@ class SocialNetwork:
 
     def input_manager(self, get_now=datetime.datetime.now):
         command = input("> ")
-
+        
         if "->" not in command:
+            return True
+        
+        if not re.match(r'\w+\s->', command):
             return True
         
         self.store_message(command, get_now)

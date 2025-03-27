@@ -32,3 +32,13 @@ def test_message_is_not_stored_when_does_not_contain_an_arrow():
             social_network.input_manager(get_now=mock_now)
     
     mock_store_message.assert_not_called()
+
+def test_message_is_not_stored_when_does_not_have_username_before_arrow():
+    fixed_time = datetime.now()
+    mock_now = Mock(return_value=fixed_time)
+    
+    with patch.object(social_network, 'store_message') as mock_store_message, \
+        patch('builtins.input', return_value="-> message"):
+            social_network.input_manager(get_now=mock_now)
+        
+    mock_store_message.assert_not_called()

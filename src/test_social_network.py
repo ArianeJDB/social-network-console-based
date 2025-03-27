@@ -111,3 +111,21 @@ def test_stores_following_when_command_contains_follows():
     expected_following = social_network.store_following("username", "anotherUsername")
     assert expected_following == [{"following": "anotherUsername"}]
     assert "username" in social_network.following
+
+def test_wall_displays_followed_users_messages():
+    fixed_time = datetime.now()
+    mock_now = Mock(return_value=fixed_time)
+    social_network.messages = defaultdict(list)
+    social_network.following = defaultdict(list)
+    
+    social_network.store_following("user", "user_followed")
+    social_network.store_message("user_followed -> Message", mock_now)
+    
+    with patch('builtins.input', return_value="user wall"), \
+         patch('builtins.print') as mock_print:
+        social_network.input_manager(get_now=mock_now)
+        
+        mock_print.assert_any_call("user_followed - Message (0 min ago)")
+
+        
+        assert mock_print.call_count == 1

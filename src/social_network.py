@@ -16,6 +16,10 @@ class SocialNetwork:
             user, user_to_follow = command.split(" follows ")
             self.store_following(user, user_to_follow)
 
+        if "wall" in command:
+            username = command.split(" wall")[0]
+            self.show_wall(username, get_now=datetime.datetime.now)
+
         if "->" not in command  and is_one_word:
             self.read_messages_by(command)
         
@@ -36,7 +40,7 @@ class SocialNetwork:
         })
         return self.messages[username]
 
-    def read_messages_by(self, username, get_now=None):
+    def read_messages_by(self, username, get_now=None, show_username=False):
         if get_now is None:
             get_now = datetime.datetime.now 
         now = get_now()
@@ -45,13 +49,27 @@ class SocialNetwork:
             time_diff = now - message['timestamp']
             minutes_ago = int(time_diff.total_seconds() // 60)
             time_display = f"{minutes_ago} min ago"
-            print(f"{message['message']} ({time_display})")
+            
+            if show_username:
+                print(f"{username} - {message['message']} ({time_display})")
+            else:
+                print(f"{message['message']} ({time_display})")
     
     def store_following(self, user, user_to_follow):
         self.following[user].append({
             "following": user_to_follow
         })
         return self.following[user]
+    
+    def show_wall(self, username, get_now=datetime.datetime.now):
+        followed_users = self.get_following(username)
+
+        for followed_user in followed_users:
+            self.read_messages_by(followed_user, get_now, True)
+
+    def get_following(self, username):
+        followed_users = self.following.get(username, [])
+        return [entry["following"] for entry in followed_users]
     
     @staticmethod
     def isUsernamePresentBeforeArrow(command):

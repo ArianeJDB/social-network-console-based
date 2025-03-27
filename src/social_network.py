@@ -8,13 +8,15 @@ class SocialNetwork:
 
     def input_manager(self):
         command = input("> ")
-        username, message = command.split(" -> ")
 
+        self.store_message(command)
+        return True
+    
+    def store_message(self, command):
+        username, message = command.split(" -> ")
         self.messages[username].append({
             "message": message
         })
-        return True
-    
 
 if __name__ == "__main__":
     manager = SocialNetwork()

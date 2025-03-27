@@ -16,6 +16,9 @@ class SocialNetwork:
         if not re.match(r'\w+\s->', command):
             return True
         
+        if not re.match(r'\w+\s->\s\w+', command):
+            return True
+        
         self.store_message(command, get_now)
         return True
     
